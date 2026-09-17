@@ -1,0 +1,19 @@
+{
+  "name": "@remote-job-hub/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@remote-job-hub/core": "*",
+    "@remote-job-hub/connector-remotive": "*",
+    "@remote-job-hub/connector-himalayas": "*"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.3"
+  }
+}

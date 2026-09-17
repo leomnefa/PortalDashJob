@@ -1,0 +1,19 @@
+{
+  "name": "remote-job-hub",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "packages/connectors/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @remote-job-hub/core && npm run build -w @remote-job-hub/connector-remotive -w @remote-job-hub/connector-himalayas && npm run build -w @remote-job-hub/cli",
+    "test": "vitest run",
+    "cli": "npm run start --workspace=@remote-job-hub/cli --"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "typescript": "^5.6.3",
+    "vitest": "^5.0.1"
+  }
+}
