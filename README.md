@@ -65,7 +65,7 @@ propósito — no se implementan hasta que una fuente concreta lo soporte de ver
 | 1 — API pública libre | **Arbeitnow** ✅ implementado | ✅ | ❌ | Sin auth. Sin búsqueda server-side documentada — filtra client-side. Ver `docs/integrations/arbeitnow.md`. |
 | 1 — API pública libre | **Remote OK** ✅ implementado | ✅ | ❌ | Sin auth, pero requiere header `User-Agent` identificable o responde 403. Único conector con salario estructurado real hasta ahora (junto con Jobicy). Ver `docs/integrations/remoteok.md`. |
 | 1 — API pública libre | **Jobicy** ✅ implementado | ✅ | ❌ | Sin auth. `tag` no está confirmado como full-text search — se combina con filtrado client-side. Ver `docs/integrations/jobicy.md`. |
-| 1 — API pública libre | Jobgether | pendiente | ❌ | Mismo patrón que los anteriores. |
+| — Sin API oficial | **Jobgether** ❌ no integrable | ❌ | ❌ | No tiene API pública propia — lo único que existe es un scraper pago de terceros (Apify) sobre su sitio. Se decidió no envolverlo para no romper el patrón de "API oficial, gratuita, del dueño de los datos". Ver `docs/integrations/jobgether.md`. |
 | 2 — API con key gratis | Adzuna | pendiente | ❌ | Requiere `app_id`/`app_key` gratis, ~1000 llamadas/mes. |
 | 3 — ATS por empresa | Greenhouse, Lever, Ashby, SmartRecruiters | pendiente | a veces, depende de cada empresa | Cada board es una empresa distinta; el `POST` de aplicación existe en algunas (Greenhouse/Lever) pero requiere una API key **emitida por esa empresa puntual** — no hay una key genérica del ecosistema. |
 | 4 — ATS enterprise, requiere descubrimiento | Workday, Recruitee, BambooHR, Personio, Teamtailor, Breezy, Pinpoint, Workable | pendiente | `UNKNOWN` hasta investigar cada uno | Sin asumir que existe apply universal; Workday en particular es por tenant. |
@@ -181,8 +181,9 @@ rica (ver Roadmap).
 
 ## Roadmap
 
-- Conector Nivel 1 restante: Jobgether.
 - Paginación en Arbeitnow (hoy solo trae la primera página).
+- Jobgether queda descartado por ahora — sin API oficial propia (ver
+  `docs/integrations/jobgether.md`). Revisar si en algún momento publican una.
 - Conector Adzuna (Nivel 2, requiere registrar API key).
 - Conectores Nivel 3 por empresa puntual (Greenhouse/Lever/Ashby/SmartRecruiters) a
   demanda, cuando aparezca una oferta concreta que lo permita y con una API key propia
