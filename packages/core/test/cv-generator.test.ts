@@ -30,12 +30,14 @@ const profile: Profile = {
 const job: JobListing = {
   id: "job-1",
   source: "test",
+  sourceJobId: "1",
   title: "Senior Python Backend Engineer",
   company: "RemoteCo",
   url: "https://example.com/job-1",
   remote: true,
   tags: ["python", "backend", "sql"],
   description: "Buscamos alguien con experiencia en Python, SQL y sistemas distribuidos.",
+  retrievedAt: "2026-09-17T00:00:00.000Z",
   applyMode: "external",
 };
 

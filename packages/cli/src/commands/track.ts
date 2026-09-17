@@ -2,7 +2,7 @@ import { ApplicationStatusSchema } from "@remote-job-hub/core";
 import { getTracker } from "../context.js";
 
 export async function runTrackList(): Promise<void> {
-  const tracker = getTracker();
+  const tracker = await getTracker();
   const applications = await tracker.list();
   if (!applications.length) {
     console.log("Todavía no hay postulaciones registradas.");
@@ -15,7 +15,7 @@ export async function runTrackList(): Promise<void> {
 
 export async function runTrackStatus(id: string, statusInput: string): Promise<void> {
   const status = ApplicationStatusSchema.parse(statusInput);
-  const tracker = getTracker();
+  const tracker = await getTracker();
   const updated = await tracker.updateStatus(id, status);
   console.log(`Postulación #${updated.id} → ${updated.status}`);
 }

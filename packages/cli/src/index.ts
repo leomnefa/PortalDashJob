@@ -1,7 +1,15 @@
 #!/usr/bin/env node
+import path from "node:path";
 import { runApply } from "./commands/apply.js";
 import { runSearch } from "./commands/search.js";
 import { runTrackList, runTrackStatus } from "./commands/track.js";
+import { REPO_ROOT } from "./context.js";
+
+try {
+  process.loadEnvFile(path.join(REPO_ROOT, ".env"));
+} catch {
+  // Sin .env no hay DB configurada: context.ts cae al store JSON local.
+}
 
 async function main(): Promise<void> {
   const [command, ...args] = process.argv.slice(2);

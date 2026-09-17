@@ -35,18 +35,58 @@ export type Profile = z.infer<typeof ProfileSchema>;
 export const ApplyModeSchema = z.enum(["external", "auto", "assisted"]);
 export type ApplyMode = z.infer<typeof ApplyModeSchema>;
 
+export const EmploymentTypeSchema = z.enum([
+  "full_time",
+  "part_time",
+  "contract",
+  "freelance",
+  "temporary",
+  "internship",
+  "unknown",
+]);
+export type EmploymentType = z.infer<typeof EmploymentTypeSchema>;
+
+export const SenioritySchema = z.enum([
+  "intern",
+  "junior",
+  "mid",
+  "senior",
+  "lead",
+  "manager",
+  "unknown",
+]);
+export type Seniority = z.infer<typeof SenioritySchema>;
+
+export const SalarySchema = z.object({
+  min: z.number().optional(),
+  max: z.number().optional(),
+  currency: z.string().optional(),
+  period: z.string().optional(),
+});
+export type Salary = z.infer<typeof SalarySchema>;
+
+// Campos que ninguna fuente confirma todavía (employmentType/seniority/salary
+// estructurado) quedan optional y sin valor: no se inventan a partir de texto
+// libre. Se completan conector por conector a medida que la fuente los dé con
+// certeza (ver docs/integrations/*.md).
 export const JobListingSchema = z.object({
   id: z.string(),
   source: z.string(),
+  sourceJobId: z.string(),
   title: z.string(),
   company: z.string(),
   url: z.string(),
   location: z.string().optional(),
   remote: z.boolean(),
+  employmentType: EmploymentTypeSchema.optional(),
+  seniority: SenioritySchema.optional(),
+  salary: SalarySchema.optional(),
   tags: z.array(z.string()).default([]),
   description: z.string().default(""),
   postedAt: z.string().optional(),
+  retrievedAt: z.string(),
   applyMode: ApplyModeSchema,
+  rawData: z.unknown().optional(),
 });
 export type JobListing = z.infer<typeof JobListingSchema>;
 
@@ -54,6 +94,12 @@ export interface ConnectorCapabilities {
   search: boolean;
   applyAuto: boolean;
   applyAssisted: boolean;
+}
+
+export interface ConnectorHealth {
+  status: "online" | "degraded" | "offline";
+  checkedAt: string;
+  message?: string;
 }
 
 export interface SearchQuery {
@@ -67,6 +113,11 @@ export interface Connector {
   name: string;
   capabilities: ConnectorCapabilities;
   search(query: SearchQuery): Promise<JobListing[]>;
+  /** Solo si capabilities.search lo justifica; no todas las fuentes exponen "get by id". */
+  getJob?(sourceJobId: string): Promise<JobListing | undefined>;
+  /** Requiere capabilities.applyAuto — no implementar salvo que la API lo soporte de verdad. */
+  submitApplication?(sourceJobId: string, application: { cvText: string; coverLetterText?: string }): Promise<{ externalApplicationId?: string }>;
+  healthCheck(): Promise<ConnectorHealth>;
 }
 
 export const ApplicationStatusSchema = z.enum([
@@ -92,3 +143,22 @@ export const ApplicationSchema = z.object({
   history: z.array(z.object({ status: ApplicationStatusSchema, at: z.string() })),
 });
 export type Application = z.infer<typeof ApplicationSchema>;
+
+/**
+ * Contrato de persistencia de postulaciones. `JsonApplicationStore` (JSON local,
+ * zero-config) y `SqlApplicationStore` (packages/db, SQL Server) son las dos
+ * implementaciones — CLI y API eligen una u otra según haya DB configurada.
+ */
+export interface ApplicationStore {
+  list(): Promise<Application[]>;
+  findByJobId(jobId: string): Promise<Application | undefined>;
+  create(job: JobListing, opts?: { cvText?: string; coverLetterText?: string }): Promise<Application>;
+  updateStatus(id: string, status: ApplicationStatus): Promise<Application>;
+}
+
+/** Contrato de persistencia de ofertas normalizadas, con upsert deduplicado por id (source:sourceJobId). */
+export interface JobStore {
+  upsertMany(jobs: JobListing[]): Promise<void>;
+  list(limit?: number): Promise<JobListing[]>;
+  getById(id: string): Promise<JobListing | undefined>;
+}

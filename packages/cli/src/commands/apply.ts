@@ -32,7 +32,7 @@ export async function runApply(index: number): Promise<void> {
   await writeFile(cvPath, cv, "utf-8");
   await writeFile(letterPath, coverLetter, "utf-8");
 
-  const tracker = getTracker();
+  const tracker = await getTracker();
   const existing = await tracker.findByJobId(job.id);
   const created = existing ?? (await tracker.create(job, { cvText: cv, coverLetterText: coverLetter }));
   const application = await tracker.updateStatus(created.id, "drafted");

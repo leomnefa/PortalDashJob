@@ -1,5 +1,6 @@
 node_modules/
 dist/
+.env
 data/profile.json
 data/applications.json
 data/last-search.json

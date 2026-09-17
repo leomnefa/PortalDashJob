@@ -7,9 +7,10 @@
     "packages/connectors/*"
   ],
   "scripts": {
-    "build": "npm run build -w @remote-job-hub/core && npm run build -w @remote-job-hub/connector-remotive -w @remote-job-hub/connector-himalayas && npm run build -w @remote-job-hub/cli",
+    "build": "npm run build -w @remote-job-hub/core && npm run build -w @remote-job-hub/connector-remotive -w @remote-job-hub/connector-himalayas -w @remote-job-hub/db && npm run build -w @remote-job-hub/cli -w @remote-job-hub/api",
     "test": "vitest run",
-    "cli": "npm run start --workspace=@remote-job-hub/cli --"
+    "cli": "npm run start --workspace=@remote-job-hub/cli --",
+    "api": "npm run start --workspace=@remote-job-hub/api"
   },
   "devDependencies": {
     "@types/node": "^22.9.0",

@@ -1,9 +1,9 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { dirname } from "node:path";
 import { randomUUID } from "node:crypto";
-import type { Application, ApplicationStatus, JobListing } from "./types.js";
+import type { Application, ApplicationStatus, ApplicationStore, JobListing } from "./types.js";
 
-export class ApplicationTracker {
+export class JsonApplicationStore implements ApplicationStore {
   constructor(private readonly filePath: string) {}
 
   private async readAll(): Promise<Application[]> {

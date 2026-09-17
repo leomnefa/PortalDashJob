@@ -1,5 +1,5 @@
 import { extractKeywords, stripHtml } from "@remote-job-hub/core";
-import type { Connector, JobListing, SearchQuery } from "@remote-job-hub/core";
+import type { Connector, ConnectorHealth, JobListing, SearchQuery } from "@remote-job-hub/core";
 
 interface HimalayasJob {
   guid: string;
@@ -24,6 +24,7 @@ function mapJob(job: HimalayasJob): JobListing {
   return {
     id: `himalayas:${job.guid}`,
     source: "himalayas",
+    sourceJobId: job.guid,
     title: job.title,
     company: job.companyName,
     url: job.applicationLink,
@@ -32,7 +33,9 @@ function mapJob(job: HimalayasJob): JobListing {
     tags: job.categories ?? [],
     description: stripHtml(description),
     postedAt: job.pubDate ? new Date(job.pubDate * 1000).toISOString() : undefined,
+    retrievedAt: new Date().toISOString(),
     applyMode: "external",
+    rawData: job,
   };
 }
 
@@ -68,6 +71,17 @@ export function createHimalayasConnector(opts: HimalayasConnectorOptions = {}): 
       // La API pública no documenta de forma confiable el filtrado server-side por
       // keyword, así que filtramos client-side como red de seguridad.
       return jobs.filter((job) => matchesKeywords(job, query.keywords ?? []));
+    },
+    async healthCheck(): Promise<ConnectorHealth> {
+      const checkedAt = new Date().toISOString();
+      try {
+        const res = await fetchImpl(`${API_BASE}?limit=1`);
+        return res.ok
+          ? { status: "online", checkedAt }
+          : { status: "degraded", checkedAt, message: `HTTP ${res.status}` };
+      } catch (err) {
+        return { status: "offline", checkedAt, message: (err as Error).message };
+      }
     },
   };
 }
