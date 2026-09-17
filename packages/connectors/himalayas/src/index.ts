@@ -1,4 +1,4 @@
-import { extractKeywords, stripHtml } from "@remote-job-hub/core";
+import { filterByKeywords, stripHtml } from "@remote-job-hub/core";
 import type { Connector, ConnectorHealth, JobListing, SearchQuery } from "@remote-job-hub/core";
 
 interface HimalayasJob {
@@ -39,12 +39,6 @@ function mapJob(job: HimalayasJob): JobListing {
   };
 }
 
-function matchesKeywords(job: JobListing, keywords: string[]): boolean {
-  if (!keywords.length) return true;
-  const haystack = extractKeywords([job.title, job.tags.join(" "), job.description].join(" "));
-  return keywords.some((kw) => haystack.includes(kw.toLowerCase()));
-}
-
 export interface HimalayasConnectorOptions {
   fetchImpl?: typeof fetch;
 }
@@ -70,7 +64,7 @@ export function createHimalayasConnector(opts: HimalayasConnectorOptions = {}): 
 
       // La API pública no documenta de forma confiable el filtrado server-side por
       // keyword, así que filtramos client-side como red de seguridad.
-      return jobs.filter((job) => matchesKeywords(job, query.keywords ?? []));
+      return filterByKeywords(jobs, query.keywords ?? []);
     },
     async healthCheck(): Promise<ConnectorHealth> {
       const checkedAt = new Date().toISOString();

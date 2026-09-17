@@ -25,6 +25,9 @@ packages/
   connectors/
     remotive/       conector Nivel 1 (API pública, sin auth) — ver docs/integrations/
     himalayas/      conector Nivel 1 (API pública, sin auth) — ver docs/integrations/
+    arbeitnow/      conector Nivel 1 (API pública, sin auth) — ver docs/integrations/
+    remoteok/       conector Nivel 1 (API pública, requiere User-Agent) — ver docs/integrations/
+    jobicy/         conector Nivel 1 (API pública, sin auth) — ver docs/integrations/
   cli/             búsqueda + postulación + tracking por línea de comandos
   api/             servidor HTTP (Fastify) sobre core+db+connectors
   web/             dashboard (React + Vite) que consume la API
@@ -59,7 +62,10 @@ propósito — no se implementan hasta que una fuente concreta lo soporte de ver
 |---|---|---|---|---|
 | 1 — API pública libre | **Remotive** ✅ implementado | ✅ | ❌ | Sin auth. Delay del free tier: 24hs. Ver `docs/integrations/remotive.md`. |
 | 1 — API pública libre | **Himalayas** ✅ implementado | ✅ | ❌ | Sin auth. Prohíbe redistribuir sus ofertas a ciertos terceros (Google Jobs, LinkedIn Jobs, Jooble). Ver `docs/integrations/himalayas.md`. |
-| 1 — API pública libre | Arbeitnow, RemoteOK, Jobicy, Jobgether | pendiente | ❌ | Mismo patrón que Remotive/Himalayas. |
+| 1 — API pública libre | **Arbeitnow** ✅ implementado | ✅ | ❌ | Sin auth. Sin búsqueda server-side documentada — filtra client-side. Ver `docs/integrations/arbeitnow.md`. |
+| 1 — API pública libre | **Remote OK** ✅ implementado | ✅ | ❌ | Sin auth, pero requiere header `User-Agent` identificable o responde 403. Único conector con salario estructurado real hasta ahora (junto con Jobicy). Ver `docs/integrations/remoteok.md`. |
+| 1 — API pública libre | **Jobicy** ✅ implementado | ✅ | ❌ | Sin auth. `tag` no está confirmado como full-text search — se combina con filtrado client-side. Ver `docs/integrations/jobicy.md`. |
+| 1 — API pública libre | Jobgether | pendiente | ❌ | Mismo patrón que los anteriores. |
 | 2 — API con key gratis | Adzuna | pendiente | ❌ | Requiere `app_id`/`app_key` gratis, ~1000 llamadas/mes. |
 | 3 — ATS por empresa | Greenhouse, Lever, Ashby, SmartRecruiters | pendiente | a veces, depende de cada empresa | Cada board es una empresa distinta; el `POST` de aplicación existe en algunas (Greenhouse/Lever) pero requiere una API key **emitida por esa empresa puntual** — no hay una key genérica del ecosistema. |
 | 4 — ATS enterprise, requiere descubrimiento | Workday, Recruitee, BambooHR, Personio, Teamtailor, Breezy, Pinpoint, Workable | pendiente | `UNKNOWN` hasta investigar cada uno | Sin asumir que existe apply universal; Workday en particular es por tenant. |
@@ -124,17 +130,21 @@ datos personales, no se commitean.
 2. Mapear la respuesta de la API al tipo `JobListing` (`NormalizedJob`) de
    `@remote-job-hub/core`. No inventar `employmentType`/`seniority`/`salary`
    estructurado si la fuente no los da con certeza — dejarlos `undefined`.
-3. Declarar `capabilities` con honestidad: si la plataforma no tiene endpoint de
+3. Si no hay certeza de que la API soporte búsqueda por keyword server-side (o solo
+   filtra por un tag/categoría), aplicar `filterByKeywords` de `@remote-job-hub/core`
+   sobre el resultado como red de seguridad — ver `arbeitnow`/`remoteok`/`jobicy` para
+   el patrón.
+4. Declarar `capabilities` con honestidad: si la plataforma no tiene endpoint de
    postulación público y verificado, `applyAuto` va en `false`.
-4. Implementar `healthCheck()`.
-5. Tests con `fetch` mockeado (ver `packages/connectors/*/test/index.test.ts`) — no
+5. Implementar `healthCheck()`.
+6. Tests con `fetch` mockeado (ver `packages/connectors/*/test/index.test.ts`) — no
    hacen falta llamadas reales para el CI.
-6. Registrar el conector en `getRegistry()` (`packages/cli/src/context.ts` y
-   `packages/api/src/context.ts`).
-7. Escribir `docs/integrations/<nombre>.md` con la plantilla usada en
+7. Registrar el conector en `getRegistry()` (`packages/cli/src/context.ts` y
+   `packages/api/src/context.ts`) y como dependencia declarada en sus `package.json`.
+8. Escribir `docs/integrations/<nombre>.md` con la plantilla usada en
    `remotive.md`/`himalayas.md` (Overview/Auth/Endpoints/Search/Application/Rate
    Limits/Capabilities/Terms/Implementation Status/Tests).
-8. Sumar la fila correspondiente a la matriz de este README.
+9. Sumar la fila correspondiente a la matriz de este README.
 
 ## Validación pendiente (red bloqueada en el entorno donde se escribió esto)
 
@@ -142,8 +152,8 @@ Este scaffold se escribió en un entorno con el egress de red restringido a un
 allowlist (no llega ni a las APIs de trabajo ni a la IP:puerto de la SQL Server). Lo
 que sí se validó acá:
 
-- `npm test` (24 tests: core, conectores con `fetch` mockeado, `packages/db` con un
-  pool de SQL Server simulado que interpreta las queries reales).
+- `npm test` (34 tests: core, los 5 conectores con `fetch` mockeado, `packages/db` con
+  un pool de SQL Server simulado que interpreta las queries reales).
 - Build completo (`npm run build`) y build de producción del dashboard (`vite build`).
 - El server de API falla rápido y con mensaje claro tanto sin `.env` como con
   credenciales que apuntan a una DB inalcanzable (no cuelga).
@@ -152,8 +162,12 @@ que sí se validó acá:
 
 Lo que **falta validar en un entorno con red real** (tu máquina, o donde esto se
 despliegue):
-- Los conectores Remotive/Himalayas contra las APIs en vivo (mapeo de campos puede
-  haber cambiado).
+- Los 5 conectores (Remotive, Himalayas, Arbeitnow, Remote OK, Jobicy) contra las APIs
+  en vivo — el mapeo de campos puede haber cambiado, y para Arbeitnow/Remote OK/Jobicy
+  ni siquiera se pudo confirmar contra documentación oficial en vivo si existe un
+  parámetro de búsqueda server-side (ver cada `docs/integrations/*.md`).
+- El requisito de `User-Agent` de Remote OK (comportamiento observado, no documentado
+  formalmente).
 - La conexión real a la SQL Server y las migraciones (`schema.sql` vía `migrate()`).
 - El flujo end-to-end completo: buscar → preparar postulación → verla en el dashboard.
 
@@ -167,7 +181,8 @@ rica (ver Roadmap).
 
 ## Roadmap
 
-- Conectores Nivel 1 restantes: Arbeitnow, RemoteOK, Jobicy, Jobgether.
+- Conector Nivel 1 restante: Jobgether.
+- Paginación en Arbeitnow (hoy solo trae la primera página).
 - Conector Adzuna (Nivel 2, requiere registrar API key).
 - Conectores Nivel 3 por empresa puntual (Greenhouse/Lever/Ashby/SmartRecruiters) a
   demanda, cuando aparezca una oferta concreta que lo permita y con una API key propia

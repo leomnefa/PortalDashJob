@@ -9,8 +9,12 @@
   },
   "dependencies": {
     "@remote-job-hub/core": "*",
+    "@remote-job-hub/db": "*",
     "@remote-job-hub/connector-remotive": "*",
-    "@remote-job-hub/connector-himalayas": "*"
+    "@remote-job-hub/connector-himalayas": "*",
+    "@remote-job-hub/connector-arbeitnow": "*",
+    "@remote-job-hub/connector-remoteok": "*",
+    "@remote-job-hub/connector-jobicy": "*"
   },
   "devDependencies": {
     "tsx": "^4.19.1",

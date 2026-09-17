@@ -12,6 +12,9 @@
     "@remote-job-hub/db": "*",
     "@remote-job-hub/connector-remotive": "*",
     "@remote-job-hub/connector-himalayas": "*",
+    "@remote-job-hub/connector-arbeitnow": "*",
+    "@remote-job-hub/connector-remoteok": "*",
+    "@remote-job-hub/connector-jobicy": "*",
     "fastify": "^5.12.5",
     "@fastify/cors": "^11.3.0"
   },

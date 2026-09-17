@@ -4,6 +4,9 @@ import { ConnectorRegistry, JsonApplicationStore, loadProfileFromFile } from "@r
 import type { ApplicationStore, Connector, Profile } from "@remote-job-hub/core";
 import { createRemotiveConnector } from "@remote-job-hub/connector-remotive";
 import { createHimalayasConnector } from "@remote-job-hub/connector-himalayas";
+import { createArbeitnowConnector } from "@remote-job-hub/connector-arbeitnow";
+import { createRemoteOkConnector } from "@remote-job-hub/connector-remoteok";
+import { createJobicyConnector } from "@remote-job-hub/connector-jobicy";
 import { SqlApplicationStore, SqlJobStore, getPool, isDbConfigured, migrate } from "@remote-job-hub/db";
 
 // packages/cli/{src,dist}/context.{ts,js} está siempre a 3 niveles del repo root,
@@ -20,6 +23,9 @@ export function getRegistry(): ConnectorRegistry {
   const registry = new ConnectorRegistry();
   registry.register(createRemotiveConnector());
   registry.register(createHimalayasConnector());
+  registry.register(createArbeitnowConnector());
+  registry.register(createRemoteOkConnector());
+  registry.register(createJobicyConnector());
   return registry;
 }
 

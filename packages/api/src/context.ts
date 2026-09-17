@@ -4,6 +4,9 @@ import { ConnectorRegistry, loadProfileFromFile } from "@remote-job-hub/core";
 import type { Profile } from "@remote-job-hub/core";
 import { createRemotiveConnector } from "@remote-job-hub/connector-remotive";
 import { createHimalayasConnector } from "@remote-job-hub/connector-himalayas";
+import { createArbeitnowConnector } from "@remote-job-hub/connector-arbeitnow";
+import { createRemoteOkConnector } from "@remote-job-hub/connector-remoteok";
+import { createJobicyConnector } from "@remote-job-hub/connector-jobicy";
 import { SqlApplicationStore, SqlJobStore, getPool, isDbConfigured, migrate } from "@remote-job-hub/db";
 
 export const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
@@ -13,6 +16,9 @@ export function getRegistry(): ConnectorRegistry {
   const registry = new ConnectorRegistry();
   registry.register(createRemotiveConnector());
   registry.register(createHimalayasConnector());
+  registry.register(createArbeitnowConnector());
+  registry.register(createRemoteOkConnector());
+  registry.register(createJobicyConnector());
   return registry;
 }
 

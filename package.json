@@ -7,7 +7,7 @@
     "packages/connectors/*"
   ],
   "scripts": {
-    "build": "npm run build -w @remote-job-hub/core && npm run build -w @remote-job-hub/connector-remotive -w @remote-job-hub/connector-himalayas -w @remote-job-hub/db && npm run build -w @remote-job-hub/cli -w @remote-job-hub/api",
+    "build": "npm run build -w @remote-job-hub/core && npm run build -w @remote-job-hub/connector-remotive -w @remote-job-hub/connector-himalayas -w @remote-job-hub/connector-arbeitnow -w @remote-job-hub/connector-remoteok -w @remote-job-hub/connector-jobicy -w @remote-job-hub/db && npm run build -w @remote-job-hub/cli -w @remote-job-hub/api",
     "test": "vitest run",
     "cli": "npm run start --workspace=@remote-job-hub/cli --",
     "api": "npm run start --workspace=@remote-job-hub/api"
