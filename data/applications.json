@@ -1,0 +1,36 @@
+[
+  {
+    "id": "317251b2-50d0-4d14-a5f3-210dc05f21c7",
+    "job": {
+      "id": "remotive:999",
+      "source": "remotive",
+      "title": "Senior Backend Engineer",
+      "company": "Acme Remote",
+      "url": "https://remotive.com/remote-jobs/999",
+      "location": "Worldwide",
+      "remote": true,
+      "tags": [
+        "node",
+        "backend",
+        "aws"
+      ],
+      "description": "Buscamos Backend Engineer con Node.js, TypeScript y AWS.",
+      "applyMode": "external"
+    },
+    "status": "drafted",
+    "cvText": "# Nombre Apellido\nnombre@example.com · +54 9 11 0000-0000 · Buenos Aires, Argentina (remoto)\nLinkedIn: https://linkedin.com/in/tu-usuario · GitHub: https://github.com/tu-usuario\n\n## Resumen\nDesarrollador/a backend con 5 años de experiencia en sistemas distribuidos y APIs de alto tráfico. Postulación orientada a **Senior Backend Engineer** en **Acme Remote**.\n\n## Habilidades\nNode.js, TypeScript, AWS, PostgreSQL, Docker, Python\n\n## Experiencia\n**Backend Engineer** — Empresa Actual (2022-03 – presente)\n- Diseñé e implementé APIs REST en Node.js/TypeScript usadas por +50k usuarios\n- Migré infraestructura on-prem a AWS reduciendo costos 30%\n- Lideré la adopción de Docker y CI/CD en el equipo\n\n## Educación\nIngeniería en Sistemas — Universidad Ejemplo (2015 – 2021)\n\n## Idiomas\nEspañol (nativo), Inglés (avanzado)\n",
+    "coverLetterText": "Hola equipo de Acme Remote,\nLes escribo para postularme a la posición de Senior Backend Engineer. Desarrollador/a backend con 5 años de experiencia en sistemas distribuidos y APIs de alto tráfico.\nEn mi rol como Backend Engineer en Empresa Actual, diseñé e implementé apis rest en node.js/typescript usadas por +50k usuarios.\nMis principales fortalezas para este rol son Node.js, TypeScript, AWS.\nQuedo a disposición para conversar sobre cómo puedo aportar al equipo.\nSaludos,\nNombre Apellido",
+    "createdAt": "2026-09-17T14:56:49.168Z",
+    "updatedAt": "2026-09-17T14:56:49.169Z",
+    "history": [
+      {
+        "status": "found",
+        "at": "2026-09-17T14:56:49.168Z"
+      },
+      {
+        "status": "drafted",
+        "at": "2026-09-17T14:56:49.169Z"
+      }
+    ]
+  }
+]

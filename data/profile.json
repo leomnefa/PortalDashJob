@@ -1,0 +1,35 @@
+{
+  "fullName": "Nombre Apellido",
+  "email": "nombre@example.com",
+  "phone": "+54 9 11 0000-0000",
+  "location": "Buenos Aires, Argentina (remoto)",
+  "links": {
+    "LinkedIn": "https://linkedin.com/in/tu-usuario",
+    "GitHub": "https://github.com/tu-usuario"
+  },
+  "summary": "Desarrollador/a backend con 5 años de experiencia en sistemas distribuidos y APIs de alto tráfico.",
+  "targetRoles": ["Backend Engineer", "Node.js Developer"],
+  "skills": ["Node.js", "TypeScript", "PostgreSQL", "Docker", "AWS", "Python"],
+  "languages": ["Español (nativo)", "Inglés (avanzado)"],
+  "experience": [
+    {
+      "company": "Empresa Actual",
+      "role": "Backend Engineer",
+      "startDate": "2022-03",
+      "endDate": null,
+      "bullets": [
+        "Diseñé e implementé APIs REST en Node.js/TypeScript usadas por +50k usuarios",
+        "Migré infraestructura on-prem a AWS reduciendo costos 30%",
+        "Lideré la adopción de Docker y CI/CD en el equipo"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Universidad Ejemplo",
+      "degree": "Ingeniería en Sistemas",
+      "startDate": "2015",
+      "endDate": "2021"
+    }
+  ]
+}
